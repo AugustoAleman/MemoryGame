@@ -9,6 +9,8 @@ Exercises:
 5. Use letters instead of tiles.
 """
 
+# Carla Oñate Gardella A01653555
+
 from random import *
 from turtle import *
 
@@ -18,7 +20,8 @@ car = path('car.gif')
 tiles = list(range(32)) * 2
 state = {'mark': None}
 hide = [True] * 64
-
+taps = 0
+pairs = 0 # variable to count number of pairs discovered
 
 def square(x, y):
     """Draw white square with black outline at (x, y)."""
@@ -42,15 +45,16 @@ def xy(count):
     """Convert tiles count to (x, y) coordinates."""
     return (count % 8) * 50 - 200, (count // 8) * 50 - 200
 
-
 def tap(x, y):
     """Update mark and hidden tiles based on tap."""
+    global taps, pairs
+    taps += 1 # Sum each tap on the screen
     spot = index(x, y)
     mark = state['mark']
-
     if mark is None or mark == spot or tiles[mark] != tiles[spot]:
         state['mark'] = spot
     else:
+        pairs += 1 # If the user found a pair add it to the total
         hide[spot] = False
         hide[mark] = False
         state['mark'] = None
@@ -77,12 +81,21 @@ def draw():
         color('black')
         write(tiles[mark], font=('Arial', 30, 'normal'))
 
+    if pairs == 32: # If all the pairs have been discovered
+        goto(0, 0)
+        write('YOU WON', font=('Arial', 30, 'normal')) # Write on the center of the screen the game is over
+        return
+
+    up()
+    goto(-200, 220) # go to the top left corner of the screen
+    tapsString = 'Taps: ' + str(taps) # The string to be shown
+    write(tapsString, font=('Arial', 10, 'normal')) # Write tap amount on the screen
     update()
     ontimer(draw, 100)
 
 
 shuffle(tiles)
-setup(420, 420, 370, 0)
+setup(420, 440, 370, 0)
 addshape(car)
 hideturtle()
 tracer(False)
