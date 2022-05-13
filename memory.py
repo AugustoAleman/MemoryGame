@@ -1,15 +1,11 @@
-"""Memory, puzzle game of number pairs.
-
-Exercises:
-
-1. Count and print how many taps occur.
-2. Decrease the number of tiles to a 4x4 grid.
-3. Detect when all tiles are revealed.
-4. Center single-digit tile.
-5. Use letters instead of tiles.
 """
+GAME: Memory Game.
+AUTHOR 1: Carla Onate Gardella.
+AUTHOR 2: Octavio Augusto Aleman Esparza.
 
-# Carla Oñate Gardella A01653555
+DATE: May - 11 - 2022.
+
+"""
 
 from random import *
 from turtle import *
@@ -59,6 +55,26 @@ def tap(x, y):
         hide[mark] = False
         state['mark'] = None
 
+def selectColors(key): # selectColor function has been added. It returns a specific color depending on the card number.
+
+    if (key >= 0 and key <= 4):
+        return 'blue'
+    elif (key >= 5 and key <= 8):
+        return 'red'
+    elif (key >= 9 and key <= 12):
+        return 'yellow'
+    elif (key >= 13 and key <= 16):
+        return 'green'
+    elif (key >= 17 and key <= 20):
+        return 'purple'
+    elif (key >= 21 and key <= 24):
+        return 'orange'
+    elif (key >= 25 and key <= 28):
+        return 'pink'
+    elif (key >= 29 and key <= 32):
+        return 'black'
+
+    
 
 def draw():
     """Draw image and tiles."""
@@ -74,16 +90,25 @@ def draw():
 
     mark = state['mark']
 
-    if mark is not None and hide[mark]:
-        x, y = xy(mark)
-        up()
-        goto(x + 2, y)
-        color('black')
-        write(tiles[mark], font=('Arial', 30, 'normal'))
+    if mark is not None and hide[mark]: #The function that displays the card number was divided in two parts. Allthough both parts are almost identical, the first one prints a 0 beforehand if the card number is a single digit.
+        if tiles[mark] < 10:
+            x, y = xy(mark)
+            up()
+            goto(x + 5, y) #The x coordinate value has been adjusted in order to center the printed numbers.
+            color(selectColors(tiles[mark]))
+            write('0' + str(tiles[mark]), align="left", font=('Arial', 30, 'normal'))
+
+        elif (tiles[mark] >= 10):
+            x, y = xy(mark)
+            up()
+            goto(x + 5, y) #The x coordinate value has been adjusted in order to center the printed numbers.
+            color(selectColors(tiles[mark]))
+            write(tiles[mark], align="left", font=('Arial', 30, 'normal'))
 
     if pairs == 32: # If all the pairs have been discovered
         goto(0, 0)
-        write('YOU WON', font=('Arial', 30, 'normal')) # Write on the center of the screen the game is over
+        color('white') #The color of the winning message will be white and has also been centered.
+        write('YOU WON', align="center", font=('Arial', 30, 'normal')) # Write on the center of the screen the game is over
         return
 
     up()
@@ -93,7 +118,6 @@ def draw():
     update()
     ontimer(draw, 100)
 
-
 shuffle(tiles)
 setup(420, 440, 370, 0)
 addshape(car)
@@ -102,3 +126,4 @@ tracer(False)
 onscreenclick(tap)
 draw()
 done()
+
